@@ -21,8 +21,7 @@ def findEncodings(images):
     encodeList = []
     for img in images:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        encode = face_recognition.face_encodings(img,model="hog")[0]# trying hog
-instead of cnn        
+        encode = face_recognition.face_encodings(img,model="hog")[0]# trying hog       
         encodeList.append(encode)
     return encodeList
 
