@@ -9,12 +9,25 @@ path = 'images'
 images = []
 classNames = []
 
-myList = os.listdir(path)
+myList = [f for f in os.listdir(path) if os.path.isdir(os.path.join(path, f))]
 
-for cl in myList:
-    curImg = cv2.imread(f'{path}/{cl}')
-    images.append(curImg)
-    classNames.append(os.path.splitext(cl)[0])
+
+# for a person with multiplr image of them in one folder
+for personName in myList:
+    personFolder = os.path.join(path, personName)
+    personImages = os.listdir(personFolder)
+    
+    for imgName in personImages:
+        curImg = cv2.imread(f'{personFolder}/{imgName}')
+        if curImg is None:
+            print(f"Failed to load: {personFolder}/{imgName}")
+            continue
+            
+        images.append(curImg)
+        classNames.append(personName)          # ← same name for all photos of this person
+
+print(f"Loaded {len(images)} images for {len(set(classNames))} persons")
+
 
 # images
 def findEncodings(images):
