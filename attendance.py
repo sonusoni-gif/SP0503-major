@@ -56,8 +56,7 @@ def markAttendance(name):
 # cam
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH,640)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH,480)#LOWER RESOLUTION
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT,15)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT,480)#LOWER RESOLUTION
 
 frame_count = 0
 SKIP_FRAMES = 5
