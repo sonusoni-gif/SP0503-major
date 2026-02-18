@@ -2,7 +2,26 @@ import cv2
 import numpy as np
 import face_recognition
 import os
-from datetime import datetime
+from datetime import datetime 
+#twilio import 
+from twilio.rest import client 
+
+#twilio configuration 
+account_sid = AC65f07bbb9aaca5c30e6415cc4a243190
+auth_token = --------------------------------
+twilio_number = 9509218340
+
+client = client(account_sid, auth_token)
+
+#map names to phone numbers 
+phone_numbers = {
+    "sudhanshu": "+919680842954",
+    "sumit": "+919588034146"
+}
+
+# to prevent multiple sms in same run 
+already_marked = set() 
+
 
 # Path to images folder
 path = 'images'
@@ -40,6 +59,26 @@ def findEncodings(images):
 
 encodeListKnown = findEncodings(images)
 
+# send sms function 
+def send_sms(name):
+    if name in phone_numbers:
+        try:
+            now = datetime.now()
+            time_string = now.strftime('%H:%M:%S')
+
+            message = client.messages.create(
+                body=f"Hi {name}, your attendance has been successfully marked at {time_string}.",
+                from_=twilio_number,
+                to=phone_numbers[name]
+            )
+            
+             print(f"SMS sent to {name}")
+
+        except Exception as e:
+            print("SMS Error:", e)
+    else:
+        print(f"No phone number found for {name}")
+
 #  attendance
 def markAttendance(name):
     with open('attendance.csv', 'r+') as f:
@@ -52,6 +91,11 @@ def markAttendance(name):
             now = datetime.now()
             dtString = now.strftime('%H:%M:%S')
             f.writelines(f'\n{name},{dtString}')
+
+# send sms after marking attendence 
+send_sms(name)
+
+already_marked.add(name)
 
 # cam
 cap = cv2.VideoCapture(0)
