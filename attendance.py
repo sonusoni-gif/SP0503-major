@@ -3,6 +3,25 @@ import numpy as np
 import face_recognition
 import os
 from datetime import datetime
+from twilio.rest import client 
+
+# twilio config
+account_sid = "AC65f07bbb9aaca5c30e6415cc4a243190"
+auth_token = "4351b335befeaacce4190c4ece9a8e67"
+twilio_number = "9509218340"
+
+client = client(account_sid, auth_token)
+
+phone_numbers = {
+    "SUDHANSHU": "+919680842954"
+    "SONU": "+919509218340"
+    "JEETU": "+916350129751"
+    "RIMJHIM": "+916375150117"
+    "SUMIT": "+919588034146"
+}
+
+# prevent multiple SMS in same run
+already_maeked=set()
 
 # Path to images folder
 path = 'images'
@@ -39,6 +58,29 @@ def findEncodings(images):
     return encodeList
 
 encodeListKnown = findEncodings(images)
+
+# SEND SMS 
+def send_sms(name):
+    if name not in phone_numbers:
+        print(f"No phone number for {name}")
+        return
+
+    try:
+        now = datetime.now()
+        time_string = now.strftime('%H:%M:%S')
+
+        client.messages.create(
+            body=f"Hi{name},your attendance has been marked at {time_string}."
+            from_=twilio_number,
+            to=phone_numbers[name]
+        )
+
+        print(f"SMS sent to {name}")
+
+    except Exception as e:
+        print("SMS Error:",e)
+        
+
 
 #  attendance
 def markAttendance(name):
